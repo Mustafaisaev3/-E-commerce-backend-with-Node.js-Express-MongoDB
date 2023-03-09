@@ -40,7 +40,7 @@ const ProductModel = new Schema({
             values: [
                 'Electronics',
                 'Cameras',
-                'Laptop',
+                'Laptops',
                 'Accessories',
                 'Headphones',
                 'Food',

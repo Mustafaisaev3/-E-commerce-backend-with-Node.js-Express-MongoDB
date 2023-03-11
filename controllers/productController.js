@@ -1,4 +1,5 @@
 const Product = require('../models/Product')
+const ErrorHandler = require('../utils/errorHandler')
 
 class ProductController {
     async getProducts (req, res) {
@@ -30,7 +31,8 @@ class ProductController {
             let product = await Product.findById(req.params.id)
 
             if(!product) {
-                res.status(404).json({status: 'error', message: 'Product not found'})
+                // res.status(404).json({status: 'error', message: 'Product not found'})
+                return next(new ErrorHandler('Product not found', 404))
             }
 
             product = await Product.findByIdAndUpdate(req.params.id, req.body, {

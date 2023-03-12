@@ -4,7 +4,16 @@ const ErrorHandler = require('../utils/errorHandler')
 class ProductController {
     async getProducts (req, res) {
         try {
-            const products = await Product.find()
+            let queryObj = { ...req.query }
+            const excludeFields = [ "page", "sort", "limit", "fields"]
+            excludeFields.forEach(el => delete queryObj[el])
+
+            let queryStr = JSON.stringify(queryObj)
+            queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`)
+
+            // console.log(queryObj, queryStr)
+            const products = await Product.find(JSON.parse(queryStr))
+
             res.status(200).json({status: 'success', products})
         } catch (error) {
             res.status(400).json({error})

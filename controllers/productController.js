@@ -1,5 +1,6 @@
 const Product = require('../models/Product')
 const ErrorHandler = require('../utils/errorHandler')
+const bcrypt = require('bcryptjs')
 
 class ProductController {
     async getProducts (req, res) {

@@ -1,11 +1,6 @@
 const { Schema, model } = require('mongoose')
 const validator = require('validator')
-// const {Role} = require('../utils/roles')
-
-const Role = {
-    USER: 'user',
-    ADMIN: 'admin'
-}
+const Role = require('../utils/roles')
 
 const UserModel = new Schema({
     name: {
@@ -43,7 +38,7 @@ const UserModel = new Schema({
         type: Date,
         default: Date.now
     },
-    resetPasswordToken: String,
+    refreshToken: String,
     resetPasswordExpire: Date
 
 })  

@@ -25,7 +25,8 @@ const ProductModel = new Schema({
         {
             public_id: {
                 type: String,
-                required: true
+                required: true,
+                default: 0
             },
             url: {
                 type: String,

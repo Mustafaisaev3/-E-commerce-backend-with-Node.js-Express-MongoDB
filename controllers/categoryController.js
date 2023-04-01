@@ -1,10 +1,11 @@
 const CategorySchema = require('../models/Category')
+const Image = require('../models/Image')
 const cloudinaryUpload = require('../utils/cloudinaryUpload')
 
 class CategoryController {
     async getAllCategories (req, res) {
         try {
-            const AllCategories = await CategorySchema.find({}).populate('parent').exec()
+            const AllCategories = await CategorySchema.find({}).populate('parent').populate('image').exec()
             
             res.status(200).json({status: 'success', data: AllCategories})
         } catch (error) {
@@ -14,18 +15,31 @@ class CategoryController {
 
     async createCategory (req, res) {
         try {
-            const { name, parent, children} = req.body
-            const { url } = await cloudinaryUpload.uploadFile(req.file, 'category')
+            const categoryRes = req.body
+            const cloudinaryResp = await cloudinaryUpload.uploadFile(req.file, 'category')
+            // const { url } = await cloudinaryUpload.uploadFile(req.file, 'category')
+            console.log(cloudinaryResp, req.file)
+            // const image = await Image.create({
+            //     name: req.file.originalname,
+            //     url: cloudinaryResp.url,
+            //     size: req.file.size,
+            //     cloudinary_id: cloudinaryResp.public_id
+            // })
 
             const data = {
-                name, 
-                image: url, 
-                // parent, 
-                children,
+                ...categoryRes,
+                title: categoryRes.name,
+                image: cloudinaryResp.url, 
             }
+            // const data = {
+            //     name, 
+            //     image: url, 
+            //     // parent,
+            //     children,
+            // }
             
             const newCategory = await CategorySchema.create(data)
-            console.log(newCategory, 'hdhdhdhdhdh')
+            // console.log(newCategory, 'hdhdhdhdhdh')
 
             res.status(200).json({status: 'success', data: newCategory})
         } catch (error) {

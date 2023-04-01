@@ -1,6 +1,7 @@
 const Product = require('../models/Product')
 const ErrorHandler = require('../utils/errorHandler')
 const bcrypt = require('bcryptjs')
+const cloudinaryUpload = require('../utils/cloudinaryUpload')
 
 class ProductController {
     async getProducts (req, res) {
@@ -14,7 +15,7 @@ class ProductController {
             queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`)
 
 
-            let query = Product.find(JSON.parse(queryStr))
+            let query = Product.find(JSON.parse(queryStr)).populate('category')
             
             // Sorting
             if(req.query.sort) {
@@ -48,7 +49,7 @@ class ProductController {
 
             const products = await query
 
-            res.status(200).json({status: 'success', products})
+            res.status(200).json({status: 'success', data: products})
         } catch (error) {
             console.log(error)
             res.status(400).json({error})
@@ -72,22 +73,51 @@ class ProductController {
 
     async updateProduct (req, res) {
         try {
+            const { urls } = req.body
+            const files = req.files
+            let images = []
+            
+
             let product = await Product.findById(req.params.id)
 
             if(!product) {
-                // res.status(404).json({status: 'error', message: 'Product not found'})
-                return next(new ErrorHandler('Product not found', 404))
+                res.status(404).json({status: 'error', message: 'Product not found'})
             }
 
-            product = await Product.findByIdAndUpdate(req.params.id, req.body, {
-                new: true,
-                runValidators: true,
-                useFindAndModify: false
-            })
+            if(urls) {
+                // We get links as strings. Therefore, we need to separate from by comma
+                // const urlsArr = urls.split(',')
+                // console.log(urlsArr)
+                images = urls
+            }
+            
 
-            res.status(200).json({status: 'success', product, message: 'Product successfuly apdated'})
+            if(files) {
+                const cloudinaryResp = await cloudinaryUpload.uploadFiles(files, 'product')
+
+                if(typeof(images) == 'string') {
+                    images = [images, ...cloudinaryResp]
+                } else {
+                    images = [...images, ...cloudinaryResp]
+                }
+
+                product = await Product.findByIdAndUpdate(req.params.id, req.body)
+
+                product.images = images
+                product.save()
+                res.status(200).json({status: 'success', data: product, message: 'Product successfuly apdated'})
+            } else {
+                res.status(200).json({status: 'success', data: product, message: 'Product successfuly apdated'})
+            }
+
+            // product = await Product.findByIdAndUpdate(req.params.id, req.body, {
+            //     new: true,
+            //     runValidators: true,
+            //     useFindAndModify: false
+            // })
+
         } catch (error) {
-            res.status(400).json({error})
+            res.status(400).json({error, message: 'error rrr'})
         }
     }
 
@@ -109,9 +139,21 @@ class ProductController {
 
     async newProduct (req, res) {
         try {
-            const product = await Product.create(req.body)
+            const productRes = req.body
+            const files = req.files
+            // const images = []
 
-            res.status(201).json({status: 'success', product})
+            const images = await cloudinaryUpload.uploadFiles(files, 'product')
+            
+            const data = {
+                ...productRes,
+                name: productRes.title,
+                images, 
+            }
+            
+            const newProduct = await Product.create(data)
+
+            res.status(201).json({status: 'success', data: newProduct})
         } catch (error) {
             res.status(400).json({error})
         }

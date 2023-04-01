@@ -5,9 +5,14 @@ const CategorySchema = new Schema({
         require: true,
         type: String
     },
+    title: {
+        require: true,
+        type: String
+    },
     // price: Boolean,
     // photos_num: Number,
-    image: String,
+    // image:  {type: Schema.Types.ObjectId, ref: 'Image', require: false},
+    image:  String,
     // color: String,
     // options: [{type: Schema.Types.ObjectId, ref: 'Option'}],
     parent: {type: Schema.Types.ObjectId, ref: 'Category', require: false},

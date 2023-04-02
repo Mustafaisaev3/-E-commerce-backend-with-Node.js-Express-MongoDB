@@ -93,4 +93,4 @@ const ProductModel = new Schema({
     // }
 }, {timestamps: true})
 
-module.exports = model('Products', ProductModel)
+module.exports = model('Product', ProductModel)

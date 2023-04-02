@@ -7,7 +7,8 @@ const cors = require('./middleware/corsMiddleware')
 // Route Imports
 const productRotes = require('./routes/product.routes')
 const userRotes = require('./routes/user.routes')
-const categoeyRoutes = require('./routes/category.routes')
+const categoryRoutes = require('./routes/category.routes')
+const orderRoutes = require('./routes/order.routes')
 
 
 const app = express()
@@ -24,7 +25,8 @@ app.use(cors)
 
 app.use('/api/v1', productRotes)
 app.use('/api/v1', userRotes)
-app.use('/api/v1', categoeyRoutes)
+app.use('/api/v1', categoryRoutes)
+app.use('/api/v1', orderRoutes)
 
 
 // Middleware to handle errors

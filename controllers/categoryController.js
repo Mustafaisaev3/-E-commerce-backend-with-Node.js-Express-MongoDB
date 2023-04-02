@@ -1,5 +1,4 @@
 const CategorySchema = require('../models/Category')
-const Image = require('../models/Image')
 const cloudinaryUpload = require('../utils/cloudinaryUpload')
 
 class CategoryController {
@@ -9,7 +8,7 @@ class CategoryController {
             
             res.status(200).json({status: 'success', data: AllCategories})
         } catch (error) {
-            res.status(400).json({error, hhh: 'hhh'})
+            res.status(400).json({status: 'error', message: error})
         }
     }
 
@@ -39,7 +38,6 @@ class CategoryController {
             // }
             
             const newCategory = await CategorySchema.create(data)
-            // console.log(newCategory, 'hdhdhdhdhdh')
 
             res.status(200).json({status: 'success', data: newCategory})
         } catch (error) {

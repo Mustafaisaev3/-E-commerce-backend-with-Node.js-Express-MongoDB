@@ -49,6 +49,7 @@ const ProductModel = new Schema({
     // ],
     category: {
         type: Schema.Types.ObjectId,
+        ref: 'Category',
         required: [true, 'Please select category for this product'],
     },
     stock: {

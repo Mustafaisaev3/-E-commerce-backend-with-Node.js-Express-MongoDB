@@ -9,6 +9,8 @@ const productRotes = require('./routes/product.routes')
 const userRotes = require('./routes/user.routes')
 const categoryRoutes = require('./routes/category.routes')
 const orderRoutes = require('./routes/order.routes')
+const custumerRoutes = require('./routes/custumer.routes')
+const optionRoutes = require('./routes/option.routes')
 
 
 const app = express()
@@ -27,6 +29,8 @@ app.use('/api/v1', productRotes)
 app.use('/api/v1', userRotes)
 app.use('/api/v1', categoryRoutes)
 app.use('/api/v1', orderRoutes)
+app.use('/api/v1', custumerRoutes)
+app.use('/api/v1', optionRoutes)
 
 
 // Middleware to handle errors

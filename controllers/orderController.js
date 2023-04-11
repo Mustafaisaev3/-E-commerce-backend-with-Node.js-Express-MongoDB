@@ -103,6 +103,25 @@ class OrderController {
             res.status(400).json({status: 'error', message: error.message})
         }
     }
+
+    async fetchUserOrders (req, res) {
+        try {
+            const { id } = req.params
+
+            const userOrders = await Order.find({user: id})
+
+            if(!userOrders) {
+                res.status(404).json({status: 'error', message: 'Orders not found'})
+            } else {
+                res.status(200).json({status: 'success', data: userOrders})
+            }
+            
+        } catch (error) {
+            res.status(400).json({status: 'error', message: error.message})
+        }
+    }
+
+
 }
 
 module.exports = new OrderController()

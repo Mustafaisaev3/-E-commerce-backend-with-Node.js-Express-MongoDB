@@ -4,7 +4,7 @@ const cloudinaryUpload = require('../utils/cloudinaryUpload')
 class CategoryController {
     async getAllCategories (req, res) {
         try {
-            const AllCategories = await CategorySchema.find({}).populate('parent').populate('image').exec()
+            const AllCategories = await CategorySchema.find({}).populate('parent').populate('children').populate('image').exec()
             
             res.status(200).json({status: 'success', data: AllCategories})
         } catch (error) {
@@ -17,7 +17,7 @@ class CategoryController {
             const categoryRes = req.body
             const cloudinaryResp = await cloudinaryUpload.uploadFile(req.file, 'category')
             // const { url } = await cloudinaryUpload.uploadFile(req.file, 'category')
-            console.log(cloudinaryResp, req.file)
+            // console.log(cloudinaryResp, req.file)
             // const image = await Image.create({
             //     name: req.file.originalname,
             //     url: cloudinaryResp.url,
@@ -39,6 +39,12 @@ class CategoryController {
             
             const newCategory = await CategorySchema.create(data)
 
+            if (categoryRes.parent) {
+                const parentCategory = await CategorySchema.findById(categoryRes.parent)
+                parentCategory.children.push(newCategory._id)
+                parentCategory.save()
+            }
+
             res.status(200).json({status: 'success', data: newCategory})
         } catch (error) {
             res.status(400).json({error})
@@ -48,8 +54,8 @@ class CategoryController {
     async getCategory (req, res) {
         try {
             const { categoryId } = req.body
-            console.log(categoryId)
-            const targetCategory = await CategorySchema.find({_id: categoryId}).populate('parent')
+
+            const targetCategory = await CategorySchema.find({_id: categoryId}).populate('parent').populate(children)
             res.status(200).json({status: 'success', data: targetCategory[0]})
 
 
@@ -85,13 +91,13 @@ class CategoryController {
             const { name, parent, url } = req.body
             const { id } = req.params
             let cloudinaryImageUrl = ''
-            console.log(name, 'it is name')
+
             if(!id) {
                 res.status(400).send()
             }
             
             const category = await CategorySchema.findById(id)
-            console.log(category)
+
             if(req.file){
                 const { url } = await cloudinaryUpload.uploadFile(req.file, 'category')
                 cloudinaryImageUrl = url
@@ -102,7 +108,7 @@ class CategoryController {
                 // category.parent = parent
                 url ? category.image = url : category.image = cloudinaryImageUrl
                 category.save()
-                console.log(category)
+
 
                 res.status(200).json({status: 'success', data: category})
             } else {

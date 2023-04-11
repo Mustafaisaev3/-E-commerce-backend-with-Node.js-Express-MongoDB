@@ -16,6 +16,7 @@ class ProductController {
 
 
             let query = Product.find(JSON.parse(queryStr)).populate('category')
+            console.log(query)
             
             // Sorting
             if(req.query.sort) {
@@ -42,12 +43,13 @@ class ProductController {
                 const productCount = await Product.countDocuments()
                 if(skip >= productCount) {
                     console.log(productCount)
-                    // throw new Error('This Page does not exists')
                     res.status(404).json({status: 'error', message: 'This Page does not exists'})
                 }
             }
 
-            const products = await query
+            const products = await query.populate('category')
+
+            console.log(products)
 
             res.status(200).json({status: 'success', data: products})
         } catch (error) {
@@ -65,7 +67,7 @@ class ProductController {
                 res.status(404).json({status: 'error', message: 'Product not found'})
             }
 
-            res.status(200).json({status: 'success', product})
+            res.status(200).json({status: 'success', data: product})
         } catch (error) {
             res.status(400).json({error})
         }

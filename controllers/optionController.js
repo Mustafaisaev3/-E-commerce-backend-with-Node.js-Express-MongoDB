@@ -5,7 +5,7 @@ const cloudinaryUpload = require('../utils/cloudinaryUpload')
 class OptionsController {
     async fetchOptions (req, res) {
         try {
-            const options = await Option.find({}).populate('optionValues')
+            const options = await Option.find({})
 
             res.status(200).json({status: 'success', data: options})
         } catch (error) {
@@ -46,13 +46,13 @@ class OptionsController {
             const optionsLoop = async () => { 
                 const promises = await options.map(async (option) => {
                     if(option.image != undefined){
-                        const newOptionValue = await OptionValue.create({value: option.value, image: imagesGenerator.next().value})
-                        newOption.optionValues.push(newOptionValue)
-                        return newOptionValue
+                        // const newOptionValue = await OptionValue.create({value: option.value, image: imagesGenerator.next().value})
+                        newOption.values.push({value: option.value, title: option.value, image: imagesGenerator.next().value})
+                        // return newOptionValue
                     } else {
-                        const newOptionValue = await OptionValue.create({value: option.value, image: null})
-                        newOption.optionValues.push(newOptionValue)
-                        return newOptionValue
+                        // const newOptionValue = await OptionValue.create({value: option.value, image: null})
+                        newOption.values.push({value: option.value, title: option.value, image: null})
+                        // return newOptionValue
                     }
     
                 })
@@ -60,27 +60,48 @@ class OptionsController {
                 await Promise.all(promises)
                 await newOption.save()
             }
+            // const optionsLoop = async () => { 
+            //     const promises = await options.map(async (option) => {
+            //         if(option.image != undefined){
+            //             const newOptionValue = await OptionValue.create({value: option.value, image: imagesGenerator.next().value})
+            //             newOption.optionValues.push(newOptionValue)
+            //             return newOptionValue
+            //         } else {
+            //             const newOptionValue = await OptionValue.create({value: option.value, image: null})
+            //             newOption.optionValues.push(newOptionValue)
+            //             return newOptionValue
+            //         }
+    
+            //     })
+
+            //     await Promise.all(promises)
+            //     await newOption.save()
+            // }
 
             optionsLoop()
 
-            // for(let i = 0; i < options.length ; i++){
-            //     const optionObj = {value: options[i].value, image: options[i].image == undefined ? undefined : images[i]}
-            //     const newOption = await OptionValue.create()
-            // }
-            // optionObj.map((option) => {
+            res.status(201).json({status: 'success', data: newOption})
+        } catch (error) {
+            res.status(400).json({error: error.message})
+        }
+    }
+    
+    async deleteOption (req, res) {
+        try {
+            const { id } = req.params
 
+            console.log(id)
+            const option = await Option.findById('643b499ae6e7266ca7ba8a13')
+
+            if(!option) {
+                res.status(404).json({status: 'error', message: 'Option not found'})
+            }
+
+            // option.optionValues.map((value) => {
+            //     console.log(value)
             // })
             
-
-            // const data = {
-            //     ...productRes,
-            //     name: productRes.title,
-            //     images, 
-            // }
-            
-            // const newProduct = await Product.create(data)
-
-            res.status(201).json({status: 'success', data: newOption})
+            res.status(200).json({message: 'OK'})
         } catch (error) {
             res.status(400).json({error: error.message})
         }

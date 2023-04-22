@@ -34,6 +34,35 @@ const ProductModel = new Schema({
         default: 0
     },
     images: [{type: String, required: false}],
+    options: [{
+        option: {
+            type: Schema.Types.ObjectId,
+            ref: 'Option',
+        },
+        values: [
+            {
+                // id: {
+                //     type: Schema.Types.ObjectId,
+                //     ref: 'OptionValue',
+                // },
+                value: String,
+                quantity: Number,
+                price: Number
+            }
+        ]
+        // values: [
+        //     {
+        //         type: Schema.Types.ObjectId,
+        //         ref: 'OptionValue',
+        //     }
+        // ]
+    }],
+    characteristics: [
+        {
+            characteristic: String,
+            text: String
+        }
+    ],
     // images: [
     //     {
     //         public_id: {

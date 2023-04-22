@@ -47,7 +47,7 @@ class ProductController {
                 }
             }
 
-            const products = await query.populate('category')
+            const products = await query.populate('category').populate('options.option')
 
             console.log(products)
 
@@ -76,6 +76,7 @@ class ProductController {
     async updateProduct (req, res) {
         try {
             const { urls } = req.body
+            const productRes = req.body
             const files = req.files
             let images = []
             
@@ -92,6 +93,12 @@ class ProductController {
                 // console.log(urlsArr)
                 images = urls
             }
+
+            const parsedOptions = JSON.parse(productRes.options)
+            const parsedCharacteristics = JSON.parse(productRes.characteristics)
+
+            delete productRes.options
+            delete productRes.characteristics
             
 
             if(files) {
@@ -103,7 +110,8 @@ class ProductController {
                     images = [...images, ...cloudinaryResp]
                 }
 
-                product = await Product.findByIdAndUpdate(req.params.id, req.body)
+                // product = await Product.findByIdAndUpdate(req.params.id, req.body)
+                product = await Product.findByIdAndUpdate(req.params.id, {...productRes, options: parsedOptions, characteristics: parsedCharacteristics})
 
                 product.images = images
                 product.save()
@@ -119,7 +127,7 @@ class ProductController {
             // })
 
         } catch (error) {
-            res.status(400).json({error, message: 'error rrr'})
+            res.status(400).json({error: error.message, message: 'error rrr'})
         }
     }
 
@@ -141,23 +149,32 @@ class ProductController {
 
     async newProduct (req, res) {
         try {
-            const productRes = req.body
+            let productRes = req.body
+            
             const files = req.files
-            // const images = []
+            
+            const parsedOptions = JSON.parse(productRes.options)
+            const parsedCharacteristics = JSON.parse(productRes.characteristics)
+
+            delete productRes.options
+            delete productRes.characteristics
 
             const images = await cloudinaryUpload.uploadFiles(files, 'product')
             
             const data = {
                 ...productRes,
                 name: productRes.title,
+                options: parsedOptions,
+                characteristics: parsedCharacteristics,
                 images, 
             }
             
             const newProduct = await Product.create(data)
 
             res.status(201).json({status: 'success', data: newProduct})
+            // res.status(201).json({status: 'success'})
         } catch (error) {
-            res.status(400).json({error})
+            res.status(400).json({message: error.message})
         }
     }
 }

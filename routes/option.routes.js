@@ -8,6 +8,7 @@ const upload = multer({storage})
 
 router.get('/options', OptionController.fetchOptions)
 router.post('/option', upload.array('img'), OptionController.newOption)
+router.delete('/option/:id', OptionController.deleteOption)
 // router.put('/order', OrderController.updateOrder)
 // router.delete('/order', OrderController.deleteOrder)
 // router.post('/order/:id/status', OrderController.changeOrderStatus)

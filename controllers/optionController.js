@@ -82,7 +82,7 @@ class OptionsController {
 
             res.status(201).json({status: 'success', data: newOption})
         } catch (error) {
-            res.status(400).json({error: error.message})
+            res.status(400).json({status: 'error', message: error.message})
         }
     }
     
@@ -103,7 +103,7 @@ class OptionsController {
             
             res.status(200).json({message: 'OK'})
         } catch (error) {
-            res.status(400).json({error: error.message})
+            res.status(400).json({status: 'error', message: error.message})
         }
     }
 

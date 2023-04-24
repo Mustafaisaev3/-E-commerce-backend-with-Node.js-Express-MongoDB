@@ -8,7 +8,7 @@ class CustumerController {
             
             res.status(200).json({status: 'success', data: AllCustumers})
         } catch (error) {
-            res.status(400).json({status: 'error', message: error})
+            res.status(400).json({status: 'error', message: error.message})
         }
     }
 

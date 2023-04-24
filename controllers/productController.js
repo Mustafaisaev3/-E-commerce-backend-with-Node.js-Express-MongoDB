@@ -54,7 +54,7 @@ class ProductController {
             res.status(200).json({status: 'success', data: products})
         } catch (error) {
             console.log(error)
-            res.status(400).json({error})
+            res.status(400).json({status: 'error', message: error.message})
         }
     }
 
@@ -69,7 +69,7 @@ class ProductController {
 
             res.status(200).json({status: 'success', data: product})
         } catch (error) {
-            res.status(400).json({error})
+            res.status(400).json({status: 'error', message: error.message})
         }
     }
 
@@ -127,7 +127,7 @@ class ProductController {
             // })
 
         } catch (error) {
-            res.status(400).json({error: error.message, message: 'error rrr'})
+            res.status(400).json({status: 'error', message: error.message})
         }
     }
 
@@ -143,7 +143,7 @@ class ProductController {
 
             res.status(200).json({status: 'success', message: 'Product successfuly deleted'})
         } catch (error) {
-            res.status(400).json({error})
+            res.status(400).json({status: 'error', message: error.message})
         }
     }
 
@@ -174,7 +174,7 @@ class ProductController {
             res.status(201).json({status: 'success', data: newProduct})
             // res.status(201).json({status: 'success'})
         } catch (error) {
-            res.status(400).json({message: error.message})
+            res.status(400).json({status: 'error', message: error.message})
         }
     }
 }

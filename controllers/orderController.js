@@ -62,7 +62,7 @@ class OrderController {
                 res.status(400).json({status: 'error', message: 'Category not found!'})
             }
         } catch (error) {
-            res.status(400).json({status: 'error', message: 'some error'})
+            res.status(400).json({status: 'error', message: error.message})
         }
     }
 

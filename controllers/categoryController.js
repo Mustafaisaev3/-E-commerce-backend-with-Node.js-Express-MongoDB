@@ -8,7 +8,7 @@ class CategoryController {
             
             res.status(200).json({status: 'success', data: AllCategories})
         } catch (error) {
-            res.status(400).json({status: 'error', message: error})
+            res.status(400).json({status: 'error', message: error.message})
         }
     }
 
@@ -47,7 +47,7 @@ class CategoryController {
 
             res.status(200).json({status: 'success', data: newCategory})
         } catch (error) {
-            res.status(400).json({error})
+            res.status(400).json({status: 'error', message: error.message})
         }
     }
 
@@ -60,7 +60,7 @@ class CategoryController {
 
 
         } catch (error) {
-            res.status(400).json({error})
+            res.status(400).json({status: 'error', message: error.message})
         }
     }
 
@@ -82,7 +82,7 @@ class CategoryController {
             res.status(200).json({status: 'success', message: 'Category deleted!'})
 
         } catch (error) {
-            res.status(400).json({status: 'error', message: 'some error'})
+            res.status(400).json({status: 'error', message: error.message})
         }
     }
 
@@ -115,7 +115,7 @@ class CategoryController {
                 res.status(400).json({status: 'error', message: 'Category not found!'})
             }
         } catch (error) {
-            res.status(400).json({status: 'error', message: 'some error'})
+            res.status(400).json({status: 'error', message: error.message})
         }
     }
 }

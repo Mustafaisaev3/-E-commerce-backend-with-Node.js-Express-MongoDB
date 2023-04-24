@@ -43,7 +43,7 @@ class UserController {
             res.status(200).json({status: 'success', user})
 
         } catch (error) {
-            res.status(400).json({status: 'error', error})
+            res.status(400).json({status: 'error', message: error.message})
         }
     }
 
@@ -82,7 +82,7 @@ class UserController {
 
         } catch (error) {
             console.log(error)
-            res.status(400).json({status: 'error', error})
+            res.status(400).json({status: 'error', message: error.message})
         }
     }
 
@@ -105,7 +105,7 @@ class UserController {
             return res.status(204)
         } catch (error) {
             console.log(error)
-           res.status(400).json({message: 'Refresh token Error'}) 
+           res.status(400).json({status: 'error', message: error.message}) 
         }
     }
 
@@ -126,7 +126,7 @@ class UserController {
 
         } catch (error) {
             console.log(error)
-            res.status(400).json({status: 'error', error})
+            res.status(400).json({status: 'error', message: error.message})
         }
     }
 
@@ -153,7 +153,7 @@ class UserController {
     
         } catch (error) {
             console.log(error)
-           res.status(400).json({message: 'Refresh token Error'}) 
+           res.status(400).json({status: 'error', message: error.message}) 
         }
     }
 }

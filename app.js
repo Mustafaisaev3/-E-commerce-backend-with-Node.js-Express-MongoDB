@@ -12,6 +12,7 @@ const orderRoutes = require('./routes/order.routes')
 const custumerRoutes = require('./routes/custumer.routes')
 const optionRoutes = require('./routes/option.routes')
 const blogRoutes = require('./routes/blog.routes')
+const homeRoutes = require('./routes/home.routes')
 
 
 const app = express()
@@ -33,6 +34,7 @@ app.use('/api/v1', orderRoutes)
 app.use('/api/v1', custumerRoutes)
 app.use('/api/v1', optionRoutes)
 app.use('/api/v1', blogRoutes)
+app.use('/api/v1', homeRoutes)
 
 
 // Middleware to handle errors

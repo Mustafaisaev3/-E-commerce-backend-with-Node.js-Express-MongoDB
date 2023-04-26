@@ -1,7 +1,11 @@
-const MainBanner = require('../models/Home/MainBanner')  
+const MainBanner = require('../models/Modules/MainBanner') 
+const Slider = require('../models/Modules/Slider') 
 const cloudinaryUpload = require('../utils/cloudinaryUpload')
 
-class HomeController {
+class ModulesController {
+
+    // Main Banner 
+
     async getMainBanner (req, res) {
         try {
             const MainBannerObj = await MainBanner.find({})
@@ -164,172 +168,91 @@ class HomeController {
         }
     }
 
-    async getPostById (req, res) {
-        try {
-            const { id } = req.params
-            
-            if(!id) {
-                res.status(400).send()
-            }
+    // Main Banner 
 
-            const blogPost = await BlogChema.findById(id)
-            
-            res.status(200).json({status: 'success', data: blogPost})
+    // Slider
+
+    async getSliders (req, res) {
+        try {
+
+            const Sliders = await Slider.find({}).populate({
+                path: 'items',
+                model: 'Product'
+            })
+
+            res.status(201).json({status: 'success', data: Sliders})
         } catch (error) {
             res.status(400).json({status: 'error', message: error.message})
         }
     }
 
-    async createBlogPost (req, res) {
+    async newSlider (req, res) {
         try {
-            const blogPostRes = req.body
-            const cloudinaryResp = await cloudinaryUpload.uploadFile(req.file, 'blog')
+            const sliderRes = req.body
 
-            const data = {
-                ...blogPostRes,
-                image: cloudinaryResp.url, 
-            }
+            const newSlider = await Slider.create(sliderRes)
 
-            const newBlogPost = await BlogChema.create(data)
-
-            res.status(200).json({status: 'success', data: newBlogPost})
+            res.status(201).json({status: 'success', data: newSlider})
         } catch (error) {
             res.status(400).json({status: 'error', message: error.message})
         }
     }
-
-    async updateBlogPost (req, res) {
+    
+    async updateSlider (req, res) {
         try {
-            const { title, description, category, status, url } = req.body
+            const sliderRes = req.body
             const { id } = req.params
-            let cloudinaryImageUrl = ''
 
             if(!id) {
                 res.status(400).send()
             }
-            
-            const blogPost = await BlogChema.findById(id)
 
-            if(req.file){
-                const { url } = await cloudinaryUpload.uploadFile(req.file, 'blog')
-                cloudinaryImageUrl = url
-            }
+            const updatedSlider = await Slider.findByIdAndUpdate(id, sliderRes).populate({
+                path: 'items',
+                model: 'Product'
+            })
 
-            if (blogPost) {
-                blogPost.title = title
-                blogPost.description = description
-                blogPost.category = category
-                blogPost.status = status
-                url ? blogPost.image = url : blogPost.image = cloudinaryImageUrl
-                blogPost.save()
+            console.log(sliderRes)
 
-
-                res.status(200).json({status: 'success', data: blogPost})
+            if(!updatedSlider) {
+                res.status(404).json({status: 'error', message: 'Slider not Found'})
             } else {
-                res.status(400).json({status: 'error', message: 'Post not found!'})
+                res.status(201).json({status: 'success', data: updatedSlider})
             }
+
         } catch (error) {
             res.status(400).json({status: 'error', message: error.message})
         }
     }
 
-    async deleteBlogPost (req, res) {
+    async deleteSlider (req, res) {
+        console.log('delete')
         try {
             const { id } = req.params
 
             if(!id) {
                 res.status(400).send()
             }
-            
-            const blogPost = await BlogChema.findById(id)
-            if(!blogPost) {
-                res.status(400).json({status: 'error', message: 'Post not found!'})
+
+            const slider = await Slider.findById(id).populate({
+                path: 'items',
+                model: 'Product'
+            })
+
+            if(!slider) {
+                res.status(404).json({status: 'error', message: 'Slider not found'})
             }
-            blogPost.deleteOne()
 
-            res.status(200).json({status: 'success', message: 'Post deleted!'})
+            await slider.deleteOne()
 
+            res.status(201).json({status: 'success', message: 'Slider deleted!'})
         } catch (error) {
             res.status(400).json({status: 'error', message: error.message})
         }
     }
 
-    async getBlogCategories (req, res) {
-        try {
-            const BlogCategories = await BlogCategoryChema.find({})
-            
-            res.status(200).json({status: 'success', data: BlogCategories})
-        } catch (error) {
-            res.status(400).json({status: 'error', message: error.message})
-        }
-    }
-
-    async createBlogCategory (req, res) {
-        try {
-            const { name } = req.body
-
-            console.log(req.body)
-            const blogCatObj = {
-                title: name,
-                name: name,
-            }
-            // console.log(blogCatObj)
-
-            const blogCategory = await BlogCategoryChema.create(blogCatObj)
-            
-            res.status(200).json({status: 'success', data: blogCategory})
-        } catch (error) {
-            res.status(400).json({status: 'error', message: error.message})
-        }
-    }
-
-    async updateBlogCategory (req, res) {
-        try {
-            const { name } = req.body
-            const { id } = req.params
-
-            if(!id) {
-                res.status(400).send()
-            }
-
-            const blogCatObj = {
-                title: name,
-                name: name,
-            }
-
-            const blogCategory = await BlogCategoryChema.findByIdAndUpdate(id, blogCatObj)
-            
-            if(!blogCategory) {
-                res.status(400).json({status: 'error', message: 'Blog Category not found!'})
-            }
-
-            res.status(200).json({status: 'success', data: blogCategory})
-        } catch (error) {
-            res.status(400).json({status: 'error', message: error.message})
-        }
-    }
-
-    async deleteBlogCategory (req, res) {
-        try {
-            const { id } = req.params
-
-            if(!id) {
-                res.status(400).send()
-            }
-            
-            const blogCategory = await BlogCategoryChema.findById(id)
-            if(!blogCategory) {
-                res.status(400).json({status: 'error', message: 'Blog Category not found!'})
-            }
-            blogCategory.deleteOne()
-
-            res.status(200).json({status: 'success', message: 'Blog Category deleted!'})
-
-        } catch (error) {
-            res.status(400).json({status: 'error', message: error.message})
-        }
-    }
+    // Slider
 
 }
 
-module.exports = new HomeController()
+module.exports = new ModulesController()

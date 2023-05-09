@@ -5,6 +5,9 @@ const SliderSchema = new Schema({
         require: true,
         type: String
     },
+    title: {
+        type: String
+    },
     link: {
         require: false,
         type: String

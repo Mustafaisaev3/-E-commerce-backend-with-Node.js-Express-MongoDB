@@ -36,7 +36,7 @@ class CloudinaryUpload {
 
             const cloudImgObj = await new Promise((resolve, reject) => {
                 cloudinary.v2.uploader.upload_stream({resource_type: 'auto', folder: folder}, (error, result) => {
-                    console.log(result, error)
+                    // console.log(result, error)
                     if(error || !result){
                         return reject(error)
                     }

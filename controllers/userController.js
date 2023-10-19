@@ -54,13 +54,13 @@ class UserController {
             const user = await User.findOne({email})
 
             if(!user){
-                return res.status(404).json({message: 'User not found'})
+                return res.status(404).json({status: 'error', message: 'User not found'})
             }
 
             const isValidPassword = bcrypt.compareSync(password, user.password)
 
             if(!isValidPassword){
-                return res.status(400).json({message: "Password is incorrect"})
+                return res.status(400).json({status: 'error', message: "Password is incorrect"})
             }
 
             // const token = jwt.sign({id: user.id}, config.get('secretKey'), {expiresIn: '1h'})
@@ -72,6 +72,7 @@ class UserController {
 
             res.cookie('jwt', refreshToken, {httpOnly: true, maxAge: 24 * 60 * 60 * 1000})
             res.json({
+                status: 'success',
                 accessToken,
                 user: {
                     id: user.id,

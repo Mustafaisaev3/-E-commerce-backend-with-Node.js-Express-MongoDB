@@ -1,8 +1,16 @@
 const { model, Schema, ObjectId } = require('mongoose')
 
 const BannerSchema = new Schema({
-    title: String,
-    link: String,
+    name: {
+        type: String
+    },
+    title: {
+        type: String
+    },
+    link: {
+        require: false,
+        type: String
+    },
     items: [
         {   
             title: String, 
@@ -10,7 +18,14 @@ const BannerSchema = new Schema({
             link: String, 
             image: String,
         }
-    ]
+    ],
+    type: {
+        type: String
+    },
+    status: {
+        type: Boolean,
+        default: true
+    }
 
 }, {timestamps: true})
 

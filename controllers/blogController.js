@@ -53,8 +53,6 @@ class BlogController {
             const { id } = req.params
             let cloudinaryImageUrl = ''
 
-            
-
             if(!id) {
                 res.status(400).send()
             }

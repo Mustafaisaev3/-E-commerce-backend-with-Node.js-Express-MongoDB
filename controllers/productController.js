@@ -8,6 +8,7 @@ class ProductController {
         try {
             let queryObj = { ...req.query }
             const excludeFields = [ "page", "sort", "limit", "fields"]
+            console.log(queryObj, 'sssssssssssssssssssssssssssssssssssssss')
 
             // Filtering
             excludeFields.forEach(el => delete queryObj[el])

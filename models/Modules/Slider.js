@@ -12,7 +12,11 @@ const SliderSchema = new Schema({
         require: false,
         type: String
     },
-    items: [{type: Schema.Types.ObjectId, require: true}],
+    // items: [{type: Schema.Types.ObjectId, require: true}],
+    items: [],
+    type: {
+        type: String
+    },
     status: {
         type: Boolean,
         default: true

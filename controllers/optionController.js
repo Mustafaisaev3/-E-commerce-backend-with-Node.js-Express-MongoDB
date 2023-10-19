@@ -42,7 +42,6 @@ class OptionsController {
             //     await newOption.save()
             // })
 
-
             const optionsLoop = async () => { 
                 const promises = await options.map(async (option) => {
                     if(option.image != undefined){
@@ -60,6 +59,7 @@ class OptionsController {
                 await Promise.all(promises)
                 await newOption.save()
             }
+
             // const optionsLoop = async () => { 
             //     const promises = await options.map(async (option) => {
             //         if(option.image != undefined){
@@ -81,6 +81,44 @@ class OptionsController {
             optionsLoop()
 
             res.status(201).json({status: 'success', data: newOption})
+        } catch (error) {
+            res.status(400).json({status: 'error', message: error.message})
+        }
+    }
+
+    async updateOption (req, res) {
+        try {
+            const { option } = req.body
+            const files = req.files
+
+            console.log(option, 'option')
+
+            const {id, name, options} = JSON.parse(option)
+
+            let optionItem = await Option.findById(id)
+
+            if(!optionItem) {
+                res.status(404).json({status: 'error', message: 'Option not found'})
+            }
+
+            const optionsLoop = async () => { 
+                optionItem.values = []
+                const promises = await options.map(async (option) => {
+                    if(option.image != undefined){
+                        optionItem.values.push({value: option.value, title: option.value, image: imagesGenerator.next().value})
+                    } else {
+                        optionItem.values.push({value: option.value, title: option.value, image: null})
+                    }
+    
+                })
+
+                await Promise.all(promises)
+                await optionItem.save()
+            }
+
+            optionsLoop()
+
+            res.status(201).json({status: 'success', data: optionItem})
         } catch (error) {
             res.status(400).json({status: 'error', message: error.message})
         }

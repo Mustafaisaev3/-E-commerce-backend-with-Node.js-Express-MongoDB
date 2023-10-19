@@ -6,6 +6,13 @@ const multer = require('multer')
 const storage = multer.memoryStorage()
 const upload = multer({storage})
 
+// All Modules
+router.get('/all-modules', ModulesController.getAllModules)
+
+// Pages Layouts
+router.get('/get-page-layout/:name', ModulesController.getPageLayout)
+router.post('/create-page-layout', ModulesController.createPageLayout)
+
 // Main Banner
 router.get('/main-banner', ModulesController.getMainBanner)
 router.post('/main-banner', upload.array('img'), ModulesController.createMainBannerSliderItems)
@@ -16,7 +23,7 @@ router.post('/slider', ModulesController.newSlider)
 router.put('/slider/:id', ModulesController.updateSlider)
 router.delete('/slider/:id', ModulesController.deleteSlider)
 
-// Popilar Categories
+// Popular Categories
 router.get('/popular-categories', ModulesController.getPopularCategories)
 router.post('/popular-categories', upload.array('img'), ModulesController.createPopularCategories)
 

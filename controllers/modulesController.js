@@ -1,9 +1,95 @@
 const MainBanner = require('../models/Modules/MainBanner') 
 const Slider = require('../models/Modules/Slider') 
 const Banners = require('../models/Modules/Banners') 
+const PageLayout = require('../models/PageLayout') 
 const cloudinaryUpload = require('../utils/cloudinaryUpload')
 
 class ModulesController {
+
+    // All Modules
+
+    async getAllModules (req, res) {
+        try {
+            const SlidersArr = await Slider.find({}).populate('items')
+            const BannersArr = await Banners.find({}).populate('items')
+            
+            const Modules = [...SlidersArr, ...BannersArr]
+
+            res.status(200).json({status: 'success', data: Modules})
+        } catch (error) {
+            res.status(400).json({status: 'error', message: error.message})
+        }
+    }
+
+    // All Modules
+
+    // Pages Layout
+
+    async getPageLayout (req, res) {
+        try {
+            const { name } = req.params
+            // const PageSliders = await PageLayout.findOne({name}).populate({
+            //     path: 'top',
+            //     model: 'Slider',
+            // }).populate({
+            //     path: 'bottom',
+            //     model: 'Slider',
+            // }).populate({
+            //     path: 'left',
+            //     model: 'Slider',
+            // }).populate({
+            //     path: 'right',
+            //     model: 'Slider',
+            // })
+
+            // const PageBanners = await PageLayout.findOne({name}).populate({
+            //     path: 'top',
+            //     model: Banners,
+            // }).populate({
+            //     path: 'bottom',
+            //     model: Banners,
+            // }).populate({
+            //     path: 'left',
+            //     model: Banners,
+            // }).populate({
+            //     path: 'right',
+            //     model: Banners,
+            // })
+
+            const Page = await PageLayout.findOne({name})
+
+            console.log(Page)
+
+            if (!Page) {
+                res.status(400).json({status: 'error', message: 'Page not found!'})
+            } else if (Page) {
+                res.status(200).json({status: 'success', data: Page})
+            }
+            
+        } catch (error) {
+            res.status(400).json({status: 'error', message: error.message})
+        }
+    }
+
+    async createPageLayout (req, res) {
+        try {
+            const { name } = req.body
+            const Page = await PageLayout.findOne({name})
+
+            if (!Page) {
+                const NewPage = await PageLayout.create(req.body)
+                res.status(200).json({status: 'success', data: NewPage})
+            } else if (Page) {
+                const ExistingPage = await PageLayout.findOneAndUpdate({name}, req.body)
+                res.status(200).json({status: 'success', data: ExistingPage})
+            }
+            
+        } catch (error) {
+            res.status(400).json({status: 'error', message: error.message})
+        }
+    }
+
+    // Pages Layout
 
     // Main Banner 
 
@@ -431,6 +517,10 @@ class ModulesController {
 
             const Brands = await Banners.findOne({title: 'Brands'})
 
+            if (!Brands) {
+                res.status(200).json({status: 'success', data: []})
+            }
+
             res.status(201).json({status: 'success', data: Brands})
         } catch (error) {
             res.status(400).json({status: 'error', message: error.message})
@@ -452,7 +542,7 @@ class ModulesController {
             const BrandsObj = await Banners.findOne({title: 'Brands'})
 
             if (!BrandsObj) {
-                await Banners.create({title: 'Brands', link: parsedBrands.link, status: parsedBrands.status})
+                await Banners.create({title: 'Brands', type: parsedBrands.type, link: parsedBrands.link, status: parsedBrands.status})
             }
 
 

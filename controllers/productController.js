@@ -7,8 +7,8 @@ class ProductController {
     async getProducts (req, res) {
         try {
             let queryObj = { ...req.query }
-            const excludeFields = [ "page", "sort", "limit", "fields"]
-            console.log(queryObj, 'sssssssssssssssssssssssssssssssssssssss')
+            const excludeFields = [ "page", "sort", "limit", "fields", "category"]
+            console.log(queryObj, 'oooooooooooooooooooooooooooooooo')
 
             // Filtering
             excludeFields.forEach(el => delete queryObj[el])
@@ -17,8 +17,16 @@ class ProductController {
 
 
             let query = Product.find(JSON.parse(queryStr)).populate('category')
+            // let query = Product.find({ "options.values.value": "user@gmail.com" }).populate('category')
             console.log(query)
+
+            console.log(Object.keys(queryObj))
             
+            // Category
+            if(req.query.category) {
+                query = query.find({category: req.query.category})
+            }
+
             // Sorting
             if(req.query.sort) {
                 const sortBy = req.query.sort.split(',').join(' ')

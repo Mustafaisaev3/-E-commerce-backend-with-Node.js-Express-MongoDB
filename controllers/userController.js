@@ -19,7 +19,7 @@ class UserController {
             }
 
             const { name, email, password } = req.body
-
+            console.log(req.body, 'req')
             const candidate = await User.findOne({email})
 
             if(candidate){

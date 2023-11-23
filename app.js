@@ -13,6 +13,7 @@ const custumerRoutes = require('./routes/custumer.routes')
 const optionRoutes = require('./routes/option.routes')
 const blogRoutes = require('./routes/blog.routes')
 const modulesRoutes = require('./routes/modules.routes')
+const userMessageRoutes = require('./routes/userMessage.routes')
 
 
 const app = express()
@@ -35,6 +36,7 @@ app.use('/api/v1', custumerRoutes)
 app.use('/api/v1', optionRoutes)
 app.use('/api/v1', blogRoutes)
 app.use('/api/v1', modulesRoutes)
+app.use('/api/v1', userMessageRoutes)
 
 
 // Middleware to handle errors
